@@ -22,7 +22,6 @@ print(id_Gnerators)
 #Variable generators costs 
 generator_cost = []
 for i in generators:
-    
     generator_cost.append(i.cost_energy)
 
 #Generators capacity
