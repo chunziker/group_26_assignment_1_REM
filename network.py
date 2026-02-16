@@ -3,28 +3,26 @@ class Generator:
         self,
         unit_id: int,
         node: int,
-        p_max: float,
-        p_min: float,
-        r_up: float,
-        r_down: float,
-        ramp_up: float,
-        ramp_down: float,
-        min_up: int,
-        min_down: int,
-        cost_energy: float,
-        cost_up_reserve: float,
-        cost_down_reserve: float,
-        cost_up_reg: float,
-        cost_down_reg: float,
-        startup_cost: float,
-        p_init: float,
-        u_init: int,
-        t_init: int,
+        p_max: float = None,
+        p_min: float = None,
+        r_up: float = None,
+        r_down: float = None,
+        ramp_up: float = None,
+        ramp_down: float = None,
+        min_up: int = None,
+        min_down: int = None,
+        cost_energy: float = None,
+        cost_up_reserve: float = None,
+        cost_down_reserve: float = None,
+        cost_up_reg: float = None,
+        cost_down_reg: float = None,
+        startup_cost: float = None,
+        p_init: float = None,
+        u_init: int = None,
+        t_init: int = None,
     ):
         self.unit_id = unit_id
         self.node = node
-
-        # technical limits
         self.p_max = p_max
         self.p_min = p_min
         self.r_up = r_up
@@ -33,19 +31,16 @@ class Generator:
         self.ramp_down = ramp_down
         self.min_up = min_up
         self.min_down = min_down
-
-        # costs
         self.cost_energy = cost_energy
         self.cost_up_reserve = cost_up_reserve
         self.cost_down_reserve = cost_down_reserve
         self.cost_up_reg = cost_up_reg
         self.cost_down_reg = cost_down_reg
         self.startup_cost = startup_cost
-
-        # initial state
         self.p_init = p_init
         self.u_init = u_init
         self.t_init = t_init
+
 
     def __repr__(self):
         return f"Generator(unit={self.unit_id}, node={self.node})"
@@ -63,12 +58,19 @@ generators = [
     Generator(10,22, 300, 300,  0,  0,  300,300,0, 0, 0,    0,  0,  0,  0,  0,     240, 1, 24),
     Generator(11,23, 310, 108.5,60, 60, 180,180,8, 8, 10.52,17, 16, 14, 8,  624,   248, 1, 10),
     Generator(12,23, 350, 140,  40, 40, 240,240,8, 8, 10.89,16, 14, 16, 8,  2298,  280, 1, 50),
+    #Generator(unit_id= 13, node= 3, p_max = 200, cost_energy= 0),
+    #Generator(unit_id= 14, node= 5, p_max = 200, cost_energy= 0),
+    #Generator(unit_id= 15, node= 7, p_max = 200, cost_energy= 0),
+    #Generator(unit_id= 16, node= 16, p_max = 200, cost_energy= 0),
+    #Generator(unit_id= 17, node= 21, p_max = 200, cost_energy= 0),
+    #Generator(unit_id= 18, node= 23, p_max = 200, cost_energy= 0)
 ]
 
 class Consumer:
-    def __init__(self, load_id: int, node: int, share: float):
+    def __init__(self, load_id: int, node: int, price: float, share: float):
         self.load_id = load_id
         self.node = node
+        self.price = price
         self.share = share  # Anteil an der Systemlast (z. B. 0.038)
 
         # wird später befüllt
@@ -113,25 +115,27 @@ system_demand = {
     24: 1669.815,
 }
 
+# realistic (comparatively high) demand bids in
 consumers = [
-    Consumer(1,  1,  0.038),
-    Consumer(2,  2,  0.034),
-    Consumer(3,  3,  0.063),
-    Consumer(4,  4,  0.026),
-    Consumer(5,  5,  0.025),
-    Consumer(6,  6,  0.048),
-    Consumer(7,  7,  0.044),
-    Consumer(8,  8,  0.060),
-    Consumer(9,  9,  0.061),
-    Consumer(10, 10, 0.068),
-    Consumer(11, 13, 0.093),
-    Consumer(12, 14, 0.068),
-    Consumer(13, 15, 0.111),
-    Consumer(14, 16, 0.035),
-    Consumer(15, 18, 0.117),
-    Consumer(16, 19, 0.064),
-    Consumer(17, 20, 0.045),
+    Consumer(1,  1,  165.0, 0.038),
+    Consumer(2,  2,  155.0, 0.034),
+    Consumer(3,  3,  175.0, 0.063),
+    Consumer(4,  4,  150.0, 0.026),
+    Consumer(5,  5,  145.0, 0.025),
+    Consumer(6,  6,  170.0, 0.048),
+    Consumer(7,  7,  160.0, 0.044),
+    Consumer(8,  8,  180.0, 0.060),
+    Consumer(9,  9,  185.0, 0.061),
+    Consumer(10, 10, 190.0, 0.068),
+    Consumer(11, 13, 210.0, 0.093),
+    Consumer(12, 14, 195.0, 0.068),
+    Consumer(13, 15, 220.0, 0.111),
+    Consumer(14, 16, 158.0, 0.035),
+    Consumer(15, 18, 215.0, 0.117),
+    Consumer(16, 19, 178.0, 0.064),
+    Consumer(17, 20, 162.0, 0.045),
 ]
+
 
 def initialize_consumers(consumers, system_demand):
     for consumer in consumers:
