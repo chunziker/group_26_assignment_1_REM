@@ -58,12 +58,12 @@ generators = [
     Generator(10,22, 300, 300,  0,  0,  300,300,0, 0, 0,    0,  0,  0,  0,  0,     240, 1, 24),
     Generator(11,23, 310, 108.5,60, 60, 180,180,8, 8, 10.52,17, 16, 14, 8,  624,   248, 1, 10),
     Generator(12,23, 350, 140,  40, 40, 240,240,8, 8, 10.89,16, 14, 16, 8,  2298,  280, 1, 50),
-    #Generator(unit_id= 13, node= 3, p_max = 200, cost_energy= 0),
-    #Generator(unit_id= 14, node= 5, p_max = 200, cost_energy= 0),
-    #Generator(unit_id= 15, node= 7, p_max = 200, cost_energy= 0),
-    #Generator(unit_id= 16, node= 16, p_max = 200, cost_energy= 0),
-    #Generator(unit_id= 17, node= 21, p_max = 200, cost_energy= 0),
-    #Generator(unit_id= 18, node= 23, p_max = 200, cost_energy= 0)
+    Generator(unit_id= 13, node= 3, p_max = 200, cost_energy= 0),
+    Generator(unit_id= 14, node= 5, p_max = 200, cost_energy= 0),
+    Generator(unit_id= 15, node= 7, p_max = 200, cost_energy= 0),
+    Generator(unit_id= 16, node= 16, p_max = 200, cost_energy= 0),
+    Generator(unit_id= 17, node= 21, p_max = 200, cost_energy= 0),
+    Generator(unit_id= 18, node= 23, p_max = 200, cost_energy= 0)
 ]
 
 class Consumer:
@@ -75,6 +75,8 @@ class Consumer:
 
         # wird später befüllt
         self.demand_time_series = {}
+        # wird später befüllt: stündliche Gebotspreise
+        self.demand_price_time_series = {}
 
     def set_hourly_demand(self, system_demand):
         """
@@ -83,6 +85,19 @@ class Consumer:
         self.demand_time_series = {
             h: self.share * d for h, d in system_demand.items()
         }
+
+    def set_hourly_price(self, peak_hours=(17, 18, 19, 20)):
+        """Erzeuge stündliche Gebotspreise; höhere Preise während Spitzenstunden."""
+        prices = {}
+        for h in range(1, 25):
+            # Basispreis ist self.price; erhöhe während Spitzenzeiten
+            if h in peak_hours:
+                prices[h] = round(self.price * 1.5, 2)
+            elif 8 <= h <= 16:
+                prices[h] = round(self.price * 1.2, 2)
+            else:
+                prices[h] = round(self.price * 0.9, 2)
+        self.demand_price_time_series = prices
 
     def __repr__(self):
         return f"Consumer(load={self.load_id}, node={self.node}, share={self.share})"
@@ -140,10 +155,45 @@ consumers = [
 def initialize_consumers(consumers, system_demand):
     for consumer in consumers:
         consumer.set_hourly_demand(system_demand)
+        consumer.set_hourly_price()
     return consumers
 
 
 def initialize_network():
     consumers_initialized = initialize_consumers(consumers, system_demand)
-    return consumers_initialized, generators
+    # time horizon
+    T = 24
+
+    # simple synthetic wind generation profile (MW) -- higher midday
+    wind_time_series = {
+        t: round(200 * max(0.2, (1 - abs((t - 13) / 8))), 3) for t in range(1, T + 1)
+    }
+
+    # Storage (battery/pumped hydro) object
+    class Storage:
+        def __init__(self, name: str, node: int, p_ch_max: float, p_dis_max: float, e_max: float, eta_ch: float, eta_dis: float, e_init: float = None):
+            self.name = name
+            self.node = node
+            self.p_ch_max = p_ch_max
+            self.p_dis_max = p_dis_max
+            self.e_max = e_max
+            self.eta_ch = eta_ch
+            self.eta_dis = eta_dis
+            # initial stored energy (MWh); default to 50% capacity
+            self.e_init = e_init if e_init is not None else 0.5 * e_max
+            # placeholder time series for variables
+            self.p_ch = {t: 0.0 for t in range(1, T + 1)}
+            self.p_dis = {t: 0.0 for t in range(1, T + 1)}
+            self.e = {t: 0.0 for t in range(1, T + 1)}
+
+        def __repr__(self):
+            return f"Storage(name={self.name}, node={self.node}, E={self.e_max} MWh)"
+
+    # instantiate a storage unit sized comparably to conventional units
+    # choose capacities on the order of other generators (e.g., 200 MW charging/discharging, 1000 MWh energy)
+    storage = Storage(name="battery_1", node=12, p_ch_max=200.0, p_dis_max=200.0, e_max=1000.0, eta_ch=0.9, eta_dis=0.92)
+
+    return consumers_initialized, generators, storage, wind_time_series, T
+
+
 
