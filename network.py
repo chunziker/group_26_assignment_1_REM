@@ -168,32 +168,43 @@ def initialize_network():
     wind_time_series = {
         t: round(200 * max(0.2, (1 - abs((t - 13) / 8))), 3) for t in range(1, T + 1)
     }
-
-    # Storage (battery/pumped hydro) object
-    class Storage:
-        def __init__(self, name: str, node: int, p_ch_max: float, p_dis_max: float, e_max: float, eta_ch: float, eta_dis: float, e_init: float = None):
-            self.name = name
-            self.node = node
-            self.p_ch_max = p_ch_max
-            self.p_dis_max = p_dis_max
-            self.e_max = e_max
-            self.eta_ch = eta_ch
-            self.eta_dis = eta_dis
-            # initial stored energy (MWh); default to 50% capacity
-            self.e_init = e_init if e_init is not None else 0.5 * e_max
-            # placeholder time series for variables
-            self.p_ch = {t: 0.0 for t in range(1, T + 1)}
-            self.p_dis = {t: 0.0 for t in range(1, T + 1)}
-            self.e = {t: 0.0 for t in range(1, T + 1)}
-
-        def __repr__(self):
-            return f"Storage(name={self.name}, node={self.node}, E={self.e_max} MWh)"
-
-    # instantiate a storage unit sized comparably to conventional units
-    # choose capacities on the order of other generators (e.g., 200 MW charging/discharging, 1000 MWh energy)
-    storage = Storage(name="battery_1", node=12, p_ch_max=200.0, p_dis_max=200.0, e_max=1000.0, eta_ch=0.9, eta_dis=0.92)
-
-    return consumers_initialized, generators, storage, wind_time_series, T
+    return consumers_initialized, generators
 
 
+LINES = [
+    (1, 2, 175),
+    (1, 3, 175),
+    (1, 5, 350),
+    (2, 4, 175),
+    (2, 6, 175),
+    (3, 9, 175),
+    (3, 24, 400),
+    (4, 9, 175),
+    (5, 10, 350),
+    (6, 10, 175),
+    (7, 8, 350),
+    (8, 9, 175),
+    (8, 10, 175),
+    (9, 11, 400),
+    (9, 12, 400),
+    (10, 11, 400),
+    (10, 12, 400),
+    (11, 13, 500),
+    (11, 14, 500),
+    (12, 13, 500),
+    (12, 23, 500),
+    (13, 23, 500),
+    (14, 16, 500),
+    (15, 16, 500),
+    (15, 21, 1000),
+    (15, 24, 500),
+    (16, 17, 500),
+    (16, 19, 500),
+    (17, 18, 500),
+    (17, 22, 500),
+    (18, 21, 1000),
+    (19, 20, 1000),
+    (20, 23, 1000),
+    (21, 22, 500),
+]
 
