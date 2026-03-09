@@ -1,0 +1,10 @@
+\ Model Economic_Dispatch_Model_ex6_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+\ Signature: 0x5af67735cdbe9a09
+Maximize
+ 
+Subject To
+ capacity_constraint_4: p_4 <= 0
+Bounds
+ p_4 >= 60
+End
