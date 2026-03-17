@@ -161,15 +161,7 @@ def initialize_consumers(consumers, system_demand):
 
 def initialize_network():
     consumers_initialized = initialize_consumers(consumers, system_demand)
-    # time horizon
-    T = 24
-
-    # simple synthetic wind generation profile (MW) -- higher midday
-    wind_time_series = {
-        t: round(200 * max(0.2, (1 - abs((t - 13) / 8))), 3) for t in range(1, T + 1)
-    }
     return consumers_initialized, generators
-
 
 LINES = [
     (1, 2, 175),
@@ -193,10 +185,10 @@ LINES = [
     (11, 14, 500),
     (12, 13, 500),
     (12, 23, 500),
-    (13, 23, 500),
-    (14, 16, 500),
+    (13, 23, 250),
+    (14, 16, 250),
     (15, 16, 500),
-    (15, 21, 1000),
+    (15, 21, 400),
     (15, 24, 500),
     (16, 17, 500),
     (16, 19, 500),
