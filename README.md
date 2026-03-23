@@ -1,6 +1,6 @@
-# 📘 README – Assignment 1: Market Clearing
+#  Assignment 1: Market Clearing
 
-## 📌 Overview
+##  Overview
 
 This project is part of the course **“Renewables in Electricity Markets”** at DTU.  
 The objective is to model and analyze **electricity market clearing problems** under different system assumptions.
@@ -21,7 +21,7 @@ Authors:
 
 ---
 
-## ⚙️ Project Structure
+##  Project Structure
 
 The project consists of several Jupyter notebooks and one main data/model file:
 
@@ -38,7 +38,7 @@ network.py                  # Data structures and system initialization
 
 ---
 
-## 🧩 Data Model
+##  Data Model
 
 ### Generators
 
@@ -91,7 +91,7 @@ This allows modeling:
 
 ---
 
-## 🚀 Methodology
+##  Methodology
 
 ### Step 1 – Copper-Plate (Single Hour)
 
