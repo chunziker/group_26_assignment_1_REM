@@ -13,6 +13,12 @@ The assignment covers multiple steps, including:
 
 The implementation is primarily done in Python using structured data models for generators, consumers, and network topology.
 
+Authors:
+- Bella Swan Cay - s257466
+- Carlos Omar Hunziker - s257239
+- Nikolay Yuliyanov Marinov - s225226
+- Izabella Kertész - s253226
+
 ---
 
 ## ⚙️ Project Structure
@@ -20,6 +26,8 @@ The implementation is primarily done in Python using structured data models for 
 The project consists of several Jupyter notebooks and one main data/model file:
 
 ```
+old                         # Folder containing legacy or previous versions of files
+julia                       # Folder containing the original Julia implementation
 assignment_1_step_1.ipynb   # Copper-plate, single hour
 assignment_1_step_2.ipynb   # Multi-hour + storage
 assignment_1_step_3.ipynb   # Network constraints
@@ -94,10 +102,13 @@ This allows modeling:
   - Social welfare
   - Generator profits
   - Consumer utility
-
+- Runtime: 1.45 s
 ---
 
 ### Step 2 – Multi-Hour + Storage
+
+This task was originally implemented in Julia. For consistency and improved readability, the code was later translated into Python with the assistance of generative AI.  
+The original Julia implementation can be found in the "julia" folder.
 
 - Extension to 24 hours
 - Storage unit added with:
@@ -107,6 +118,7 @@ This allows modeling:
   - Price smoothing effects
   - Storage profitability
   - Sensitivity to storage size
+- Runtime: 1.43 s
 
 ---
 
@@ -117,6 +129,7 @@ This allows modeling:
 - Analysis includes:
   - Congestion effects
   - Nodal vs zonal pricing comparison
+- Runtime: 1.83 s
 
 ---
 
@@ -129,6 +142,7 @@ This allows modeling:
   - Upward and downward regulation
 - Comparison:
   - One-price vs two-price schemes
+- Runtime: 5.36 s
 
 ---
 
@@ -143,3 +157,4 @@ This allows modeling:
 - Analysis:
   - Impact on energy prices
   - Interaction between reserve and energy markets
+- Runtime: 1.23 s
